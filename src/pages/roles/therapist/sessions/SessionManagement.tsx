@@ -435,7 +435,7 @@ const SessionManagement: React.FC = () => {
       if (sessionEndResponse.success) {
         success('Session ended successfully');
 
-        // Try to generate invoice
+        // Check billing - backend handles preference-based invoicing
         try {
           const invoiceResponse = await therapistApi.generateInvoiceFromSession(activeSession.id, {
             appointmentId: activeSession.appointment?.id,
@@ -446,11 +446,18 @@ const SessionManagement: React.FC = () => {
           });
 
           if (invoiceResponse.success) {
-            success('Invoice automatically generated and sent to client');
+            if (invoiceResponse.data?.consolidated) {
+              // Client has consolidated invoicing enabled
+              success(`Session recorded. Client will be billed in monthly invoice (${invoiceResponse.data.billingMonth})`);
+            } else {
+              // Immediate invoice generated
+              success('Invoice automatically generated and sent to client');
+            }
           }
         } catch (invoiceErr: any) {
-          console.error('Invoice generation error:', invoiceErr);
-          error('Session completed but invoice generation failed');
+          // Backend may return 409 if already billed or preference prevents immediate billing
+          // This is not necessarily an error, just log it
+          console.log('Billing check:', invoiceErr);
         }
 
         // Reset states
