@@ -187,7 +187,7 @@ const ClientDashboard: React.FC = () => {
       title: 'Find Therapist',
       description: 'Search for available therapists',
       icon: MagnifyingGlassIcon,
-      link: '/client/therapists/search',
+      link: '/client/therapists',
       color: 'bg-teal-600'
     },
     {
