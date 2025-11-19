@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { 
-  CalendarIcon, 
-  UserIcon, 
+import {
+  CalendarIcon,
+  UserIcon,
   DocumentTextIcon,
   ChatBubbleLeftIcon,
   ClipboardDocumentCheckIcon,
@@ -10,7 +10,9 @@ import {
   ChartBarIcon,
   ExclamationCircleIcon,
   BookOpenIcon,
-  PuzzlePieceIcon
+  PuzzlePieceIcon,
+  MagnifyingGlassIcon,
+  BoltIcon
 } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/store/authStore';
@@ -173,6 +175,20 @@ const ClientDashboard: React.FC = () => {
 
   // Quick actions
   const quickActions = [
+    {
+      title: 'Emergency Appointment',
+      description: 'Book urgent appointment',
+      icon: BoltIcon,
+      link: '/client/appointments/new?urgent=true',
+      color: 'bg-red-600'
+    },
+    {
+      title: 'Find Therapist',
+      description: 'Search for available therapists',
+      icon: MagnifyingGlassIcon,
+      link: '/client/therapists/search',
+      color: 'bg-teal-600'
+    },
     {
       title: t('dashboard.bookAppointment'),
       description: t('dashboard.scheduleTherapySession'),

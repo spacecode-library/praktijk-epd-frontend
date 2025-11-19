@@ -52,8 +52,8 @@ const translations = {
   'assistant.dashboard.needFollowUp': { en: 'Need follow-up', nl: 'Opvolging nodig' },
   'assistant.dashboard.scheduled': { en: 'Scheduled', nl: 'Gepland' },
   'assistant.dashboard.thisWeek': { en: 'This week', nl: 'Deze week' },
-  'role.bookkeeper': { en: 'Bookkeeper', nl: 'Boekhouder' },
-  'role.substitute': { en: 'Substitute', nl: 'Vervanger' },
+  'role.bookkeeper': { en: 'Accountant', nl: 'Accountant' },
+  'role.substitute': { en: 'Subtherapist', nl: 'Waarnemer' },
   
   // Navigation
   'nav.dashboard': { en: 'Dashboard', nl: 'Dashboard' },
