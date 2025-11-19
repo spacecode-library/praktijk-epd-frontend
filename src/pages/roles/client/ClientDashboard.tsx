@@ -328,6 +328,14 @@ const ClientDashboard: React.FC = () => {
             delay={0}
           />
           <AnimatedMetricCard
+            title="Therapists Paired"
+            value={therapist ? '1' : '0'}
+            subtitle={therapist ? therapist.name || 'Assigned' : 'None assigned'}
+            icon={UserIcon}
+            color="green"
+            delay={50}
+          />
+          <AnimatedMetricCard
             title={t('dashboard.treatmentGoals')}
             value={metrics.treatmentProgress}
             subtitle="Progress towards goals"
