@@ -217,13 +217,47 @@ export function useTherapistAppointments() {
     successMessage: 'Appointment updated successfully'
   });
 
-  return { 
-    appointments, 
-    getAppointments, 
+  return {
+    appointments,
+    getAppointments,
     createAppointment,
     updateAppointment,
-    isLoading, 
-    error 
+    isLoading,
+    error
+  };
+}
+
+export function useTherapistWaitingList() {
+  const [waitingList, setWaitingList] = useState<any[]>([]);
+  const [stats, setStats] = useState<any>(null);
+
+  const { execute, isLoading, error } = useApiCall(unifiedApi.therapist.getWaitingList, {
+    onSuccess: (data) => {
+      // API returns { waitingList: [], pagination: {}, stats: {} }
+      if (data && data.waitingList) {
+        setWaitingList(Array.isArray(data.waitingList) ? data.waitingList : []);
+        setStats(data.stats || null);
+      } else if (Array.isArray(data)) {
+        // Fallback if API returns array directly
+        setWaitingList(data);
+      } else {
+        setWaitingList([]);
+      }
+    },
+    onError: (error) => {
+      console.error('[useTherapistWaitingList] Failed to fetch waiting list:', error);
+      setWaitingList([]);
+      setStats(null);
+    },
+    showErrorToast: false
+  });
+
+  return {
+    waitingList,
+    stats,
+    getWaitingList: execute,
+    isLoading,
+    error
   };
 }
 

@@ -210,7 +210,10 @@ class UnifiedApiClient {
     // Clients
     getClients: (params?: any) => this.request<any[]>('GET', '/therapist/clients', undefined, params, { entityKey: 'clients' }),
     getClientProfile: (clientId: string) => this.request<any>('GET', `/therapist/clients/${clientId}`),
-    
+
+    // Waiting List
+    getWaitingList: (params?: any) => this.request<any>('GET', '/therapist/waiting-list', undefined, params),
+
     // Sessions
     getSessions: (params?: any) => this.request<any[]>('GET', '/therapist/sessions', undefined, params, { entityKey: 'sessions' }),
     createSessionNote: (sessionData: any) => this.request<any>('POST', '/therapist/sessions', sessionData),
