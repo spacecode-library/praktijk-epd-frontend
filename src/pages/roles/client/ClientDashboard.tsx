@@ -12,7 +12,8 @@ import {
   BookOpenIcon,
   PuzzlePieceIcon,
   MagnifyingGlassIcon,
-  BoltIcon
+  BoltIcon,
+  CurrencyEuroIcon
 } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/store/authStore';
@@ -202,6 +203,13 @@ const ClientDashboard: React.FC = () => {
       icon: ChatBubbleLeftIcon,
       link: '/client/messages/new',
       color: 'bg-green-600'
+    },
+    {
+      title: 'My Transactions',
+      description: 'View invoices and payments',
+      icon: CurrencyEuroIcon,
+      link: '/client/invoices',
+      color: 'bg-emerald-600'
     },
     {
       title: t('dashboard.viewResources'),
