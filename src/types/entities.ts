@@ -338,6 +338,7 @@ export interface DashboardMetrics {
   overdueInvoices: number;
   clientSatisfactionScore?: number;
   appointmentsToday?: number;
+  noShowCount?: number;
   newClientsThisMonth?: number;
   sessionsToday?: number;
   pendingAddressChanges?: number;

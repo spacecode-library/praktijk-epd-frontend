@@ -145,7 +145,7 @@ const AdminDashboard: React.FC = () => {
         </div>
 
         {/* Metrics Grid */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
           <AnimatedMetricCard
             title="Active Clients"
             value={metrics?.activeClients || 0}
@@ -181,6 +181,14 @@ const AdminDashboard: React.FC = () => {
             icon={ClockIcon}
             color={(metrics?.waitingListCount ?? 0) > 5 ? "red" : "yellow"}
             delay={300}
+          />
+          <AnimatedMetricCard
+            title="No-Show Appointments"
+            value={metrics?.noShowCount || 0}
+            subtitle={(metrics?.noShowCount ?? 0) > 3 ? "Requires attention" : "Normal"}
+            icon={ExclamationTriangleIcon}
+            color={(metrics?.noShowCount ?? 0) > 3 ? "red" : "orange"}
+            delay={400}
           />
         </div>
 
