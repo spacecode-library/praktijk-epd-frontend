@@ -693,20 +693,30 @@ export const useAuthStore = create<AuthStore>()(
         if (tokenRefreshTimer) {
           clearInterval(tokenRefreshTimer);
         }
-        
-        // Set up periodic token refresh (every 10 minutes)
+
+        // Set up periodic token refresh check (every 5 minutes)
+        // With 15-minute tokens, this ensures we catch expiration
         tokenRefreshTimer = setInterval(async () => {
           const token = localStorage.getItem('accessToken');
           if (token) {
             try {
-              await get().refreshAuth();
+              // Parse token to check expiration
+              const payload = JSON.parse(atob(token.split('.')[1]));
+              const expirationTime = payload.exp * 1000;
+              const currentTime = Date.now();
+              const timeUntilExpiry = expirationTime - currentTime;
+
+              // Only refresh if token expires within 5 minutes
+              if (timeUntilExpiry < 5 * 60 * 1000 && timeUntilExpiry > 0) {
+                console.log('[Auth] Token expiring soon, refreshing...');
+                await get().refreshAuth();
+              }
             } catch (error) {
-              // Silent fail on periodic token refresh
-              // If refresh fails, clear auth to force re-login
-              get().clearAuth();
+              // Don't clear auth on timer error - let axios interceptor handle it
+              console.error('[Auth] Token refresh check failed:', error);
             }
           }
-        }, 10 * 60 * 1000); // 10 minutes
+        }, 5 * 60 * 1000); // Check every 5 minutes
       },
 
       stopTokenRefreshTimer: (): void => {

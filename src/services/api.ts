@@ -222,25 +222,36 @@ api.interceptors.response.use(
     
     if (error.response?.status === 401 && !originalRequest._retry && !isSkipEndpoint) {
       originalRequest._retry = true;
-      
+
       // Check if we have an access token
       const accessToken = localStorage.getItem('accessToken');
-      
-      // If no token, just reject without redirect (let the app handle it)
+
+      // If no token, try refresh anyway (might have httpOnly cookie)
       if (!accessToken) {
-        // No access token found for 401 response
-        // Clear auth store if available
-        if ((window as any).useAuthStore) {
-          (window as any).useAuthStore.getState().clearAuth();
-        }
-        return Promise.reject(error);
-      }
-      
-      try {
-        // Try to refresh token once
-        if (!isRefreshingToken) {
+        try {
+          console.log('[API] No access token, attempting refresh from cookie...');
           const newToken = await refreshAccessToken();
-          
+          if (newToken) {
+            originalRequest.headers.Authorization = `Bearer ${newToken}`;
+            return api(originalRequest);
+          }
+        } catch (refreshError) {
+          // Only clear auth if refresh explicitly fails
+          console.log('[API] Session expired, clearing auth');
+          if ((window as any).useAuthStore) {
+            (window as any).useAuthStore.getState().clearAuth();
+          }
+          toast.error('Your session has expired. Please log in again.');
+          return Promise.reject(error);
+        }
+      }
+
+      try {
+        // Try to refresh token
+        if (!isRefreshingToken) {
+          console.log('[API] Refreshing expired token...');
+          const newToken = await refreshAccessToken();
+
           // Retry original request with new token
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
           return api(originalRequest);
@@ -252,9 +263,21 @@ api.interceptors.response.use(
             return api(originalRequest);
           }
         }
-      } catch (refreshError) {
-        console.log('[API] Token refresh failed');
-        // Don't redirect here, let the app handle navigation
+      } catch (refreshError: any) {
+        console.error('[API] Token refresh failed:', refreshError);
+
+        // Only clear auth and show message if it's truly expired (not network error)
+        if (refreshError.response?.status === 401 || refreshError.response?.status === 403) {
+          console.log('[API] Refresh token expired, clearing auth');
+          if ((window as any).useAuthStore) {
+            (window as any).useAuthStore.getState().clearAuth();
+          }
+          toast.error('Your session has expired. Please log in again.');
+        } else {
+          // Network error or temporary issue - don't logout
+          console.warn('[API] Temporary refresh error, keeping session');
+          toast.warning('Connection issue. Please try again.');
+        }
         return Promise.reject(error);
       }
     }
