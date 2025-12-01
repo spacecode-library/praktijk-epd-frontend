@@ -37,6 +37,7 @@ const AllClients = React.lazy(() => import('@/pages/roles/admin/client-managemen
 const ClientManagement = React.lazy(() => import('@/pages/roles/admin/client-management/ClientManagement'));
 const FinancialDashboard = React.lazy(() => import('@/pages/roles/admin/financial-management/FinancialDashboard'));
 const WaitingListManagement = React.lazy(() => import('@/pages/roles/admin/waiting-list/WaitingListManagement'));
+const WaitingListGrouped = React.lazy(() => import('@/pages/roles/admin/waiting-list/WaitingListGrouped'));
 const FinancialOverview = React.lazy(() => import('@/pages/roles/admin/financial/FinancialOverview'));
 const AdminReports = React.lazy(() => import('@/pages/roles/admin/reports/AdminReports'));
 const AdminSettings = React.lazy(() => import('@/pages/roles/admin/settings/AdminSettings'));
@@ -226,6 +227,7 @@ const AppRoutes: React.FC = () => {
                   <Route path="clients/:clientId" element={<ClientManagement />} />
                   <Route path="therapists/*" element={<TherapistManagement />} />
                   <Route path="waiting-list" element={<WaitingListManagement />} />
+                  <Route path="waiting-list/grouped" element={<WaitingListGrouped />} />
                   <Route path="financial" element={<FinancialOverview />} />
                   <Route path="financial-dashboard" element={<FinancialDashboard />} />
                   <Route path="reports" element={<AdminReports />} />

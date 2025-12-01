@@ -140,8 +140,9 @@ class UnifiedApiClient {
     
     // Waiting List
     getWaitingList: (params?: any) => this.request<any[]>('GET', '/admin/waiting-list', undefined, params, { entityKey: 'waitingList' }),
+    getWaitingListGrouped: (params?: any) => this.request<any>('GET', '/admin/waiting-list/grouped', undefined, params),
     updateWaitingListEntry: (id: string, updates: any) => this.request<any>('PUT', `/admin/waiting-list/${id}`, updates),
-    
+
     // Appointments
     getAppointments: (params?: any) => this.request<any[]>('GET', '/admin/appointments', undefined, params, { entityKey: 'appointments' }),
     createAppointment: (appointmentData: any) => this.request<any>('POST', '/admin/appointments', appointmentData),

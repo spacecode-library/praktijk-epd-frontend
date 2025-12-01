@@ -134,13 +134,50 @@ export function useAdminWaitingList() {
     successMessage: 'Waiting list entry updated'
   });
 
-  return { 
-    waitingList, 
-    total, 
-    getWaitingList: execute, 
+  return {
+    waitingList,
+    total,
+    getWaitingList: execute,
     updateEntry: updateEntry.execute,
-    isLoading: isLoading || updateEntry.isLoading, 
-    error: error || updateEntry.error 
+    isLoading: isLoading || updateEntry.isLoading,
+    error: error || updateEntry.error
+  };
+}
+
+export function useAdminWaitingListGrouped() {
+  const [groupedByTherapist, setGroupedByTherapist] = useState<any[]>([]);
+  const [unassigned, setUnassigned] = useState<any>({});
+  const [stats, setStats] = useState<any>(null);
+
+  const { execute, isLoading, error } = useApiCall(adminApi.getWaitingListGrouped, {
+    onSuccess: (data) => {
+      // API returns { groupedByTherapist: [], unassigned: {}, stats: {} }
+      if (data) {
+        setGroupedByTherapist(Array.isArray(data.groupedByTherapist) ? data.groupedByTherapist : []);
+        setUnassigned(data.unassigned || { total: 0, urgent: 0, requests: [] });
+        setStats(data.stats || null);
+      } else {
+        setGroupedByTherapist([]);
+        setUnassigned({ total: 0, urgent: 0, requests: [] });
+        setStats(null);
+      }
+    },
+    onError: (error) => {
+      console.error('[useAdminWaitingListGrouped] Failed to fetch grouped waiting list:', error);
+      setGroupedByTherapist([]);
+      setUnassigned({ total: 0, urgent: 0, requests: [] });
+      setStats(null);
+    },
+    showErrorToast: false
+  });
+
+  return {
+    groupedByTherapist,
+    unassigned,
+    stats,
+    getWaitingListGrouped: execute,
+    isLoading,
+    error
   };
 }
 
