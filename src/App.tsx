@@ -81,6 +81,7 @@ const EditChallenge = React.lazy(() => import('@/pages/roles/therapist/challenge
 const AssignChallenge = React.lazy(() => import('@/pages/roles/therapist/challenges/AssignChallenge'));
 const ResourcesManagementInline = React.lazy(() => import('@/pages/roles/therapist/resources/ResourcesManagementInline'));
 const TherapistClientProfile = React.lazy(() => import('@/pages/roles/therapist/clients/TherapistClientProfile'));
+const TherapistWaitingList = React.lazy(() => import('@/pages/roles/therapist/waiting-list/TherapistWaitingList'));
 
 // Client Components
 const ClientAppointments = React.lazy(() => import('@/pages/roles/client/appointments/ClientAppointments'));
@@ -258,6 +259,7 @@ const AppRoutes: React.FC = () => {
                   <Route path="dashboard" element={<ProfessionalTherapistDashboard />} />
                   <Route path="calendar" element={<TherapistCalendar />} />
                   <Route path="messages" element={<TherapistMessages />} />
+                  <Route path="waiting-list" element={<TherapistWaitingList />} />
                   <Route path="appointments" element={<ProfessionalTherapistAppointments />} />
                   <Route path="appointments/new" element={<CreateAppointment />} />
                   <Route path="appointments/:id" element={<AppointmentDetail />} />
