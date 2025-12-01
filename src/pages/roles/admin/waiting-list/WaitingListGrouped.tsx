@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   UsersIcon,
   ChartBarIcon,
@@ -7,7 +7,9 @@ import {
   CalendarIcon,
   UserGroupIcon,
   ArrowTrendingUpIcon,
-  FunnelIcon
+  FunnelIcon,
+  MagnifyingGlassIcon,
+  XMarkIcon
 } from '@heroicons/react/24/outline';
 import { useAdminWaitingListGrouped } from '@/hooks/useRealApi';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -24,18 +26,63 @@ const WaitingListGrouped: React.FC = () => {
     error
   } = useAdminWaitingListGrouped();
 
+  // Filter states
   const [statusFilter, setStatusFilter] = useState('all');
   const [urgencyFilter, setUrgencyFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [therapistSearchQuery, setTherapistSearchQuery] = useState('');
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
   // Load data on mount
   useEffect(() => {
     getWaitingListGrouped({ status: statusFilter, urgency: urgencyFilter });
   }, []);
 
-  // Reload when filters change
+  // Apply client-side filtering for therapists
+  const filteredGroupedByTherapist = useMemo(() => {
+    let filtered = groupedByTherapist;
+
+    // Search by therapist name
+    if (therapistSearchQuery.trim()) {
+      const query = therapistSearchQuery.toLowerCase();
+      filtered = filtered.filter((group: any) =>
+        group.therapistName?.toLowerCase().includes(query)
+      );
+    }
+
+    // Filter requests within each therapist group
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.map((group: any) => ({
+        ...group,
+        requests: group.requests.filter((request: any) => {
+          const fullName = `${request.client?.firstName || ''} ${request.client?.lastName || ''}`.toLowerCase();
+          const email = (request.client?.email || '').toLowerCase();
+          return fullName.includes(query) || email.includes(query);
+        })
+      })).filter((group: any) => group.requests.length > 0);
+    }
+
+    return filtered;
+  }, [groupedByTherapist, searchQuery, therapistSearchQuery]);
+
+  // Reload when backend filters change
   const handleFilterChange = () => {
     getWaitingListGrouped({ status: statusFilter, urgency: urgencyFilter });
   };
+
+  // Clear all filters
+  const handleClearFilters = () => {
+    setStatusFilter('all');
+    setUrgencyFilter('all');
+    setSearchQuery('');
+    setTherapistSearchQuery('');
+    getWaitingListGrouped({});
+  };
+
+  // Check if any filters are active
+  const hasActiveFilters = statusFilter !== 'all' || urgencyFilter !== 'all' ||
+    searchQuery || therapistSearchQuery;
 
   if (isLoading) {
     return (
@@ -56,22 +103,68 @@ const WaitingListGrouped: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Waiting List by Therapist</h1>
-          <p className="text-sm text-gray-600 mt-1">
-            View workload distribution and manage assignments across therapists
-          </p>
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Waiting List by Therapist</h1>
+            <p className="text-sm text-gray-600 mt-1">
+              View workload distribution and manage assignments across therapists
+            </p>
+          </div>
         </div>
 
-        {/* Filters */}
-        <div className="flex items-center space-x-3">
-          <div className="flex items-center space-x-2">
+        {/* Search Bars */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          {/* Therapist Search */}
+          <div className="relative">
+            <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search therapists by name..."
+              value={therapistSearchQuery}
+              onChange={(e) => setTherapistSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            {therapistSearchQuery && (
+              <button
+                onClick={() => setTherapistSearchQuery('')}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2"
+              >
+                <XMarkIcon className="w-5 h-5 text-gray-400 hover:text-gray-600" />
+              </button>
+            )}
+          </div>
+
+          {/* Client Search */}
+          <div className="relative">
+            <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search clients by name or email..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2"
+              >
+                <XMarkIcon className="w-5 h-5 text-gray-400 hover:text-gray-600" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Filter Bar */}
+        <div className="flex items-center justify-between bg-gray-50 p-4 rounded-lg">
+          <div className="flex items-center space-x-3 flex-1">
             <FunnelIcon className="w-5 h-5 text-gray-500" />
+
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 bg-white"
             >
               <option value="all">All Status</option>
               <option value="pending">Pending</option>
@@ -82,7 +175,7 @@ const WaitingListGrouped: React.FC = () => {
             <select
               value={urgencyFilter}
               onChange={(e) => setUrgencyFilter(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 bg-white"
             >
               <option value="all">All Urgency</option>
               <option value="urgent">Urgent</option>
@@ -96,6 +189,20 @@ const WaitingListGrouped: React.FC = () => {
             >
               Apply
             </button>
+
+            {hasActiveFilters && (
+              <button
+                onClick={handleClearFilters}
+                className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 flex items-center space-x-1"
+              >
+                <XMarkIcon className="w-4 h-4" />
+                <span>Clear All</span>
+              </button>
+            )}
+          </div>
+
+          <div className="text-sm text-gray-600">
+            Showing {filteredGroupedByTherapist.length} therapists
           </div>
         </div>
       </div>
@@ -200,20 +307,22 @@ const WaitingListGrouped: React.FC = () => {
       {/* Therapists with Grouped Requests */}
       <div className="space-y-4">
         <h2 className="text-xl font-semibold text-gray-900">
-          Therapists ({groupedByTherapist.length})
+          Therapists ({filteredGroupedByTherapist.length})
         </h2>
 
-        {groupedByTherapist.length === 0 ? (
+        {filteredGroupedByTherapist.length === 0 ? (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
             <UserGroupIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <p className="text-gray-500 text-lg">No therapists with waiting list requests</p>
             <p className="text-sm text-gray-400 mt-2">
-              Requests will appear here when clients select a preferred therapist
+              {hasActiveFilters
+                ? 'No therapists match your filters. Try adjusting your search or clearing filters.'
+                : 'Requests will appear here when clients select a preferred therapist'}
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4">
-            {groupedByTherapist.map((therapist: any) => (
+            {filteredGroupedByTherapist.map((therapist: any) => (
               <div
                 key={therapist.therapistId}
                 className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
