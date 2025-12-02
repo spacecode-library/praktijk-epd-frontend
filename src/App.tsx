@@ -40,6 +40,7 @@ const WaitingListManagement = React.lazy(() => import('@/pages/roles/admin/waiti
 const WaitingListGrouped = React.lazy(() => import('@/pages/roles/admin/waiting-list/WaitingListGrouped'));
 const FinancialOverview = React.lazy(() => import('@/pages/roles/admin/financial/FinancialOverview'));
 const AdminReports = React.lazy(() => import('@/pages/roles/admin/reports/AdminReports'));
+const TherapistStatistics = React.lazy(() => import('@/pages/roles/admin/reports/TherapistStatistics'));
 const AdminSettings = React.lazy(() => import('@/pages/roles/admin/settings/AdminSettings'));
 const ResourcesManagement = React.lazy(() => import('@/pages/roles/admin/resources/ResourcesManagement'));
 const ChallengesManagement = React.lazy(() => import('@/pages/roles/admin/challenges/ChallengesManagement'));
@@ -232,6 +233,7 @@ const AppRoutes: React.FC = () => {
                   <Route path="financial" element={<FinancialOverview />} />
                   <Route path="financial-dashboard" element={<FinancialDashboard />} />
                   <Route path="reports" element={<AdminReports />} />
+                  <Route path="reports/therapist-statistics" element={<TherapistStatistics />} />
                   <Route path="settings" element={<AdminSettings />} />
                   <Route path="resources" element={<ResourcesManagement />} />
                   <Route path="challenges" element={<ChallengesManagement />} />

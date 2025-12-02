@@ -152,7 +152,9 @@ class UnifiedApiClient {
     // Therapists
     getTherapists: (params?: any) => this.request<any[]>('GET', '/admin/therapists', undefined, params, { entityKey: 'therapists' }),
     updateTherapistProfile: (therapistId: string, profileData: any) => this.request<any>('PUT', `/admin/therapists/${therapistId}/profile`, profileData),
-    
+    getTherapistStatistics: (therapistId: string, params?: { startDate?: string; endDate?: string }) =>
+      this.request<any>('GET', `/admin/therapists/${therapistId}/statistics`, undefined, params),
+
     // Invoices
     getInvoices: (params?: any) => this.request<any[]>('GET', '/admin/invoices', undefined, params, { entityKey: 'invoices' }),
     
