@@ -915,6 +915,117 @@ export const realApiService = {
     }
   },
 
+  // Contract Renewal Management
+  contracts: {
+    // Admin contract endpoints
+    admin: {
+      list: async (params?: {
+        page?: number;
+        limit?: number;
+        status?: string;
+        therapist_id?: string;
+        client_id?: string;
+        auto_renew?: boolean;
+        search?: string;
+      }): Promise<ApiResponse<{ contracts: any[]; pagination: any }>> => {
+        const response = await api.get('/contracts/admin', { params });
+        return response.data;
+      },
+
+      getStats: async (): Promise<ApiResponse<{
+        total_contracts: number;
+        active_contracts: number;
+        expiring_soon: number;
+        expired: number;
+        expiring_30_days: number;
+        expiring_14_days: number;
+        expiring_7_days: number;
+        auto_renew_enabled: number;
+      }>> => {
+        return managedApiCall('/contracts/admin/stats', async () => {
+          const response = await api.get('/contracts/admin/stats');
+          return response.data;
+        }, 60000); // Cache for 1 minute
+      },
+
+      get: async (contractId: string): Promise<ApiResponse<{
+        contract: any;
+        history: any[];
+      }>> => {
+        const response = await api.get(`/contracts/admin/${contractId}`);
+        return response.data;
+      },
+
+      create: async (data: {
+        therapist_id: string;
+        client_id: string;
+        start_date: string;
+        end_date: string;
+        contract_type?: 'standard' | 'temporary' | 'trial';
+        sessions_included?: number;
+        auto_renew?: boolean;
+        renewal_period_days?: number;
+        contract_value?: number;
+        payment_schedule?: 'monthly' | 'quarterly' | 'annually' | 'per_session';
+        notes?: string;
+      }): Promise<ApiResponse<any>> => {
+        const response = await api.post('/contracts/admin', data);
+        if (response.data.success) {
+          requestManager.clearRelatedCache('/contracts/admin');
+        }
+        return response.data;
+      },
+
+      update: async (contractId: string, data: any): Promise<ApiResponse<any>> => {
+        const response = await api.put(`/contracts/admin/${contractId}`, data);
+        if (response.data.success) {
+          requestManager.clearRelatedCache('/contracts/admin');
+        }
+        return response.data;
+      },
+
+      delete: async (contractId: string): Promise<ApiResponse<any>> => {
+        const response = await api.delete(`/contracts/admin/${contractId}`);
+        if (response.data.success) {
+          requestManager.clearRelatedCache('/contracts/admin');
+        }
+        return response.data;
+      },
+
+      renew: async (contractId: string, data: {
+        new_end_date: string;
+        renewal_reason?: string;
+        renewal_notes?: string;
+      }): Promise<ApiResponse<any>> => {
+        const response = await api.post(`/contracts/admin/${contractId}/renew`, data);
+        if (response.data.success) {
+          requestManager.clearRelatedCache('/contracts/admin');
+        }
+        return response.data;
+      }
+    },
+
+    // Therapist contract endpoints
+    therapist: {
+      list: async (params?: {
+        page?: number;
+        limit?: number;
+        status?: string;
+      }): Promise<ApiResponse<{ contracts: any[]; pagination: any }>> => {
+        const response = await api.get('/contracts/therapist', { params });
+        return response.data;
+      },
+
+      get: async (contractId: string): Promise<ApiResponse<{
+        contract: any;
+        history: any[];
+      }>> => {
+        const response = await api.get(`/contracts/therapist/${contractId}`);
+        return response.data;
+      }
+    }
+  },
+
   // Therapist endpoints - using the new implementation with correct backend paths
   therapist: therapistApi,
 
