@@ -52,6 +52,7 @@ const UserManagement = React.lazy(() => import('@/pages/roles/admin/user-managem
 const AdminAppointmentsManagement = React.lazy(() => import('@/pages/roles/admin/appointments/AppointmentsManagement'));
 const AppointmentRequests = React.lazy(() => import('@/pages/roles/admin/appointments/AppointmentRequests'));
 const TherapistManagement = React.lazy(() => import('@/pages/roles/admin/therapist-management'));
+const NotificationCenter = React.lazy(() => import('@/pages/roles/admin/notifications/NotificationCenter'));
 
 // Therapist Components
 const TherapistCalendar = React.lazy(() => import('@/pages/roles/therapist/calendar/TherapistCalendar'));
@@ -83,6 +84,8 @@ const AssignChallenge = React.lazy(() => import('@/pages/roles/therapist/challen
 const ResourcesManagementInline = React.lazy(() => import('@/pages/roles/therapist/resources/ResourcesManagementInline'));
 const TherapistClientProfile = React.lazy(() => import('@/pages/roles/therapist/clients/TherapistClientProfile'));
 const TherapistWaitingList = React.lazy(() => import('@/pages/roles/therapist/waiting-list/TherapistWaitingList'));
+const TherapistContracts = React.lazy(() => import('@/pages/roles/therapist/contracts/TherapistContracts'));
+const TherapistContractDetail = React.lazy(() => import('@/pages/roles/therapist/contracts/TherapistContractDetail'));
 
 // Client Components
 const ClientAppointments = React.lazy(() => import('@/pages/roles/client/appointments/ClientAppointments'));
@@ -234,6 +237,7 @@ const AppRoutes: React.FC = () => {
                   <Route path="financial-dashboard" element={<FinancialDashboard />} />
                   <Route path="reports" element={<AdminReports />} />
                   <Route path="reports/therapist-statistics" element={<TherapistStatistics />} />
+                  <Route path="notifications" element={<NotificationCenter />} />
                   <Route path="settings" element={<AdminSettings />} />
                   <Route path="resources" element={<ResourcesManagement />} />
                   <Route path="challenges" element={<ChallengesManagement />} />
@@ -295,6 +299,9 @@ const AppRoutes: React.FC = () => {
                   <Route path="challenges/:challengeId/assign" element={<AssignChallenge />} />
                   {/* Resources Route */}
                   <Route path="resources" element={<ResourcesManagementInline />} />
+                  {/* Contract Routes */}
+                  <Route path="contracts" element={<TherapistContracts />} />
+                  <Route path="contracts/:id" element={<TherapistContractDetail />} />
                   <Route path="*" element={<Navigate to="/therapist/dashboard" replace />} />
                 </Routes>
               </DashboardLayout>

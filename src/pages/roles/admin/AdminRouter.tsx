@@ -39,6 +39,9 @@ import SurveysManagementInline from './surveys/SurveysManagementInline';
 // Contract Renewal Management
 import ContractRenewals from './contract-renewals';
 
+// Therapist Invoices
+import AdminTherapistInvoices from './therapist-invoices/AdminTherapistInvoices';
+
 // Notifications
 import NotificationCenter from './notifications/NotificationCenter';
 
@@ -115,6 +118,14 @@ const adminNavigation = [
     icon: 'CurrencyEuroIcon',
     color: 'text-green-600',
     bgColor: 'bg-green-100'
+  },
+  {
+    name: 'Therapist Invoices',
+    href: '/admin/therapist-invoices',
+    icon: 'DocumentTextIcon',
+    color: 'text-purple-600',
+    bgColor: 'bg-purple-100',
+    badge: 'New'
   },
   {
     name: 'Contract Renewals',
@@ -219,6 +230,9 @@ const AdminRouter: React.FC = () => {
         <Route path="/financial/dashboard" element={<FinancialDashboard />} />
         <Route path="/financial/invoices" element={<div>Invoices Page (To be implemented)</div>} />
         <Route path="/financial/invoices/new" element={<div>New Invoice Page (To be implemented)</div>} />
+
+        {/* Therapist Invoice Management */}
+        <Route path="/therapist-invoices" element={<AdminTherapistInvoices />} />
 
         {/* Contract Renewal Management */}
         <Route path="/contract-renewals/*" element={<ContractRenewals />} />
