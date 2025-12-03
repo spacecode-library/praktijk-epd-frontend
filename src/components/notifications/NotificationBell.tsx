@@ -255,7 +255,7 @@ const NotificationBell: React.FC = () => {
           {notifications.length > 0 && (
             <div className="p-4 border-t border-gray-200">
               <a
-                href="/notifications"
+                href="/admin/notifications"
                 className="text-sm text-blue-600 hover:text-blue-800 font-medium"
               >
                 View all notifications

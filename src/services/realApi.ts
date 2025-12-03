@@ -2222,6 +2222,11 @@ export const realApiService = {
       return response.data;
     },
 
+    bulkMarkAsRead: async (notificationIds: string[]): Promise<ApiResponse> => {
+      const response = await api.put('/notifications/bulk-read', { notificationIds });
+      return response.data;
+    },
+
     deleteNotification: async (notificationId: string): Promise<ApiResponse> => {
       const response = await api.delete(`/notifications/${notificationId}`);
       return response.data;
