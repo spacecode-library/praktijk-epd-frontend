@@ -36,6 +36,12 @@ import ChallengesManagementInline from './challenges/ChallengesManagementInline'
 import ResourcesManagementInline from './resources/ResourcesManagementInline';
 import SurveysManagementInline from './surveys/SurveysManagementInline';
 
+// Contract Renewal Management
+import ContractRenewals from './contract-renewals';
+
+// Notifications
+import NotificationCenter from './notifications/NotificationCenter';
+
 // Other Components
 import AdminSettings from './settings/AdminSettings';
 import AdminReports from './reports/AdminReports';
@@ -111,6 +117,14 @@ const adminNavigation = [
     bgColor: 'bg-green-100'
   },
   {
+    name: 'Contract Renewals',
+    href: '/admin/contract-renewals',
+    icon: 'DocumentTextIcon',
+    color: 'text-orange-600',
+    bgColor: 'bg-orange-100',
+    badge: 'New'
+  },
+  {
     name: 'Agenda',
     href: '/admin/agenda',
     icon: 'CalendarIcon',
@@ -157,6 +171,14 @@ const adminNavigation = [
     bgColor: 'bg-yellow-100'
   },
   {
+    name: 'Notifications',
+    href: '/admin/notifications',
+    icon: 'BellIcon',
+    color: 'text-red-600',
+    bgColor: 'bg-red-100',
+    badge: 'New'
+  },
+  {
     name: 'Settings',
     href: '/admin/settings',
     icon: 'Cog6ToothIcon',
@@ -197,7 +219,10 @@ const AdminRouter: React.FC = () => {
         <Route path="/financial/dashboard" element={<FinancialDashboard />} />
         <Route path="/financial/invoices" element={<div>Invoices Page (To be implemented)</div>} />
         <Route path="/financial/invoices/new" element={<div>New Invoice Page (To be implemented)</div>} />
-        
+
+        {/* Contract Renewal Management */}
+        <Route path="/contract-renewals/*" element={<ContractRenewals />} />
+
         {/* Inline Management Components (No Modals) */}
         <Route path="/address-changes" element={<AddressChangeManagementInline />} />
         <Route path="/challenges" element={<ChallengesManagementInline />} />
@@ -209,8 +234,8 @@ const AdminRouter: React.FC = () => {
         <Route path="/reports" element={<AdminReports />} />
         <Route path="/settings" element={<AdminSettings />} />
         <Route path="/company-settings" element={<CompanySettings />} />
-        <Route path="/notifications" element={<div>Notifications Page (To be implemented)</div>} />
-        
+        <Route path="/notifications" element={<NotificationCenter />} />
+
         {/* Catch all redirect */}
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Routes>
