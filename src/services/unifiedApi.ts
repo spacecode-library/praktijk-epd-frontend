@@ -193,7 +193,14 @@ class UnifiedApiClient {
     
     // Audit logs
     getAuditLogs: (params?: any) => this.request<any[]>('GET', '/admin/audit-logs', undefined, params),
-    
+
+    // Client Export
+    getExportFields: () => this.request<any>('GET', '/export/fields'),
+    exportClients: (fields: string[], filters?: any) =>
+      this.request<Blob>('POST', '/export/clients', { fields, filters }, undefined, { cache: false }),
+    getExportStats: (filters?: any) =>
+      this.request<any>('GET', '/export/stats', undefined, filters),
+
     // System health
     getSystemHealth: () => this.request<any>('GET', '/admin/system/health'),
   };
