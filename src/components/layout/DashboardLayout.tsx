@@ -183,6 +183,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           roles: [UserRole.ADMIN],
         },
         {
+          name: 'Notifications',
+          nameKey: 'nav.notifications',
+          href: '/admin/notifications',
+          icon: BellIcon,
+          roles: [UserRole.ADMIN],
+        },
+        {
           name: 'Resources',
           nameKey: 'nav.resources',
           href: '/admin/resources',
